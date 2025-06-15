@@ -35,4 +35,4 @@ while logged is False:
         counter += 1
         if counter == 100:
             counter = 0
-            i = letters + a
+            i = letters + letters
