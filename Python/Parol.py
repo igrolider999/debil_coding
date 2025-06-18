@@ -36,4 +36,4 @@ while logged is False:
         if counter == 100:
             counter = 0
             i = letters + letters
-print('idid nahui')
+print('idid nahu')
