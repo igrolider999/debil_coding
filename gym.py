@@ -2,8 +2,8 @@ from time import sleep
 from colorama import Fore, Back, Style
 from random import randint as rnd
 from sympy import limit
-from inputimeout import inputimeout
-import signal
+from threading import Timer
+import sqlite3
 
 day = 0
 day_in_apartment = 0
@@ -11,9 +11,11 @@ months_in_apartment = 1
 player_has_apartment = True
 days_at_home = 0
 home_choice = 0
+sucked = 0
+next_enemy = 1
 
 class Player:
-    cum = 100  # hp
+    cum = int(100)  # hp
     max_cum = 100  # max hp
     bucks = 1000  # money
     damage = [0, 1]  # strength
@@ -30,6 +32,7 @@ class Enemies:
         lvl = 1
         anus_tightness = 5
         aim = 5
+        is_defeated = False
 
     class dungeon_master:
         name = "Darkholme"
@@ -39,6 +42,7 @@ class Enemies:
         lvl = 15
         anus_tightness = 15
         aim = 20
+        is_defeated = False
 
     class Leatherman:
         name = "Leatherman"
@@ -47,6 +51,8 @@ class Enemies:
         damage = [10, 20]
         lvl = 50
         anus_tightness = 25
+        aim = 30
+        is_defeated = False
 
     class Uncle_Bogdan:
         name = "Bogdan"
@@ -55,23 +61,31 @@ class Enemies:
         damage = [40, 75]
         lvl = 100
         anus_tightness = 55
+        aim = 50
+        is_defeated = False
 
     class Billy:
         name = 'Billy'
-        cum = 10000
+        cum = 1000
         max_cum = 10000
         damage = [50, 100]
         lvl = 1000
         anus_tightness = 90
+        aim = 100
+        is_defeated = False
 
 class functions:
-    aboba = {1: Enemies.dungeon_master, 2: Enemies.fucking_slave, 3: Enemies.Billy, 4: Enemies.Leatherman,5: Enemies.Uncle_Bogdan}
+    aboba = {1: Enemies.fucking_slave, 2: Enemies.dungeon_master , 3: Enemies.Leatherman, 4: Enemies.Uncle_Bogdan,5: Enemies.Billy}
 
 # left_enemies = list(dungeon_master, fucking_slave, Billy, Van, Uncle_bogdan)
 
 def fisting():
+    global next_enemy
     if Player.bucks >= 300:
-        enemy_choose = int(input("\nChoose ur enemy\n1. Dungeon Master\n2. Fucking slave\n3. Billy\n4. Leatherman\n5. Bogdan\n"))
+        enemy_choose = int(input("\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
+        if enemy_choose > next_enemy:
+            print('\nYou are too weak for him. Try someone else')
+            fisting()
         enemy = functions.aboba[enemy_choose]
         print("\n", enemy.name)
 
@@ -126,21 +140,27 @@ def fisting():
             quit()
         elif enemy.cum <= 0:
             print("\nYou won!")
+            if enemy.is_defeated == False:
+                enemy.is_defeated = True
+                next_enemy += 1
             Player.bucks += enemy.lvl * 100
+            max_cum_addition = Player.max_cum / enemy.cum
+            limit(anus_tightness_addition, Player.anus_tightness, enemy.anus_tightness / 10)
+            Player.anus_tightness += anus_tightness_addition
             print(Fore.YELLOW, "You got ", enemy.lvl * 100, " bucks", Style.RESET_ALL)
             print(Fore.YELLOW, "Your money:", Player.bucks, Style.RESET_ALL)
 
     # fisting / not enough bucks
     else:
-        Player.cum -= 10
         print("\n-Fuck you")
-        print(Fore.RED, '"You are cumming"', Style.RESET_ALL)
-        print(Fore.YELLOW, 'leftover cum', Player.cum, Style.RESET_ALL)
         gym_choice()
 
 def player_stats():
     print(f'-current cum {Player.cum}\n-max cum {Player.max_cum}\n-bucks {Player.bucks}\n-Damage {Player.damage[0]}-{Player.damage[1]}\n-Aiming {Player.aim}\n-Anus tightness {Player.anus_tightness}')
 
+
+
+# choise that you make at home
 
 def home_choice():
     global days_at_home
@@ -157,9 +177,13 @@ def home_choice():
     else:
         gym_choice()
 
+# going home
+
 def cumming():
     global day, day_in_apartment, player_has_apartment, months_in_apartment
     day += 1
+    if sucked == 1:
+        print('you sucked too long and got kicked out of this gym')
     print('-day ', day, '\n-day_in_apartment', day_in_apartment, '\n-months_in_apartment', months_in_apartment)
     while player_has_apartment is True:
         print('\nyou are going home')
@@ -182,23 +206,49 @@ def cumming():
     Player.cum = 1
     print('your cum ', Player.cum)
     if Player.bucks > 4000:
-        player_has_apartment = Ture
+        player_has_apartment = True
         Player.bucks -= 2000
     home_choice()
 
+# suction
+
+def breathe_end():
+    global sucked
+    print("You can't breathe\n-Get out")
+    sucked = 1
+
 def suction():
-    global b
-    enemy_choose = int(input("\nChoose ur enemy\n1. Dungeon Master\n2. Fucking slave\n3. Billy\n4. Leatherman\n5. Bogdan\n"))
+    global gym
+    suck_attempt = 0
+    enemy_choose = int(input("\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
     enemy = functions.aboba[enemy_choose]
     print("\n", enemy.name)
     suction_number = rnd(1, enemy.lvl*20)
     print("\n-your enemy is ", enemy.name)
-    print("\nYou have", {100/enemy.lvl+Player.lungs/enemy.lvl}, "seconds to suck!")
+    breathe = Timer(100/enemy.lvl+Player.lungs/enemy.lvl, lambda:breathe_end())
+    breathe.start()
+    print("\nYou have", 100/enemy.lvl+Player.lungs/enemy.lvl, "seconds to suck!")
+    print('you must find tempo from ', 1, 'to', enemy.lvl*20)
+    while suck_attempt != suction_number:
+        suck_attempt = int(input())
+        if suck_attempt < suction_number:
+            print('faster\n')
+        if suck_attempt > suction_number:
+            print('slower\n')
+    breathe.cancel()
+    Player.bucks += enemy.lvl*10
+    print('you got', enemy.lvl*10, 'bucks\nYour balance is', Player.bucks)
+    gym_choice()
+
+# gym / stat progression
+def gym():
+    train_shoice = int(input('\nChoose your action:\n1. Fisting\n2. Cumming\n3. Suction\n4. Gym'))
     
+
 # fisting = attack / cumming = go home / Suction = gather money / gym = gain strength
 def gym_choice():
     while Player.cum > 0:
-        a = input("\nChoose ur action:\n1. Fisting\n2. Cumming\n3. Suction\n4. Gym")
+        a = input("\nChoose your action:\n1. Fisting\n2. Cumming\n3. Suction\n4. Gym")
         if a == "1":
             fisting()
         elif a == "2":
@@ -207,10 +257,12 @@ def gym_choice():
             suction()
         elif a == "4":
             pass
+        else:
+            exit()
     print(Style.BRIGHT, Back.RED, "\n\nU got ur ass kicked out of the fucking gym\n\n", Style.RESET_ALL)
     cumming()
 
 # start of the game
 print('You are living in apartment for with you must pay 2000 bucks per month.\nIn gym you can do: fisting = attack someone / rank = see enemy stats / cumming = go home / suction = gather money / gym = gain strength')
 if __name__ == "__main__":
-    cumming()
+    cumming() 
