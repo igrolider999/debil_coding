@@ -4,7 +4,7 @@ from random import randint as rnd
 from sympy import limit
 from threading import Timer
 import sqlite3
-# da
+
 day = 0
 day_in_apartment = 0
 months_in_apartment = 1
@@ -13,7 +13,7 @@ days_at_home = 0
 home_choice = 0
 sucked = 0
 next_enemy = 1
-
+# mme
 class Player:
     cum = int(100)  # hp
     max_cum = 100  # max hp
