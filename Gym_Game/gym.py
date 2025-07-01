@@ -4,7 +4,7 @@ from random import randint as rnd
 from sympy import limit
 from threading import Timer
 import sqlite3
-
+# da
 day = 0
 day_in_apartment = 0
 months_in_apartment = 1
@@ -184,6 +184,7 @@ def cumming():
     day += 1
     if sucked == 1:
         print('you sucked too long and got kicked out of this gym')
+        sucked = 0
     print('-day ', day, '\n-day_in_apartment', day_in_apartment, '\n-months_in_apartment', months_in_apartment)
     while player_has_apartment is True:
         print('\nyou are going home')
