@@ -2,11 +2,15 @@ from time import sleep
 from colorama import Fore, Back, Style
 from random import randint as rnd
 from sympy import limit
+from inputimeout import inputimeout
+import signal
 
 day = 0
-day_in_apartment = 28
+day_in_apartment = 0
 months_in_apartment = 1
 player_has_apartment = True
+days_at_home = 0
+home_choice = 0
 
 class Player:
     cum = 100  # hp
@@ -15,6 +19,7 @@ class Player:
     damage = [0, 1]  # strength
     aim = 1
     anus_tightness = 1
+    lungs = 1
 
 class Enemies:
     class fucking_slave:
@@ -66,8 +71,7 @@ class functions:
 
 def fisting():
     if Player.bucks >= 300:
-        enemy_choose = int(
-            input("\nChoose ur enemy\n1. Dungeon Master\n2. Fucking slave\n3. Billy\n4. Leatherman\n5. Bogdan\n"))
+        enemy_choose = int(input("\nChoose ur enemy\n1. Dungeon Master\n2. Fucking slave\n3. Billy\n4. Leatherman\n5. Bogdan\n"))
         enemy = functions.aboba[enemy_choose]
         print("\n", enemy.name)
 
@@ -132,52 +136,65 @@ def fisting():
         print("\n-Fuck you")
         print(Fore.RED, '"You are cumming"', Style.RESET_ALL)
         print(Fore.YELLOW, 'leftover cum', Player.cum, Style.RESET_ALL)
-        choice()
+        gym_choice()
 
 def player_stats():
     print(f'-current cum {Player.cum}\n-max cum {Player.max_cum}\n-bucks {Player.bucks}\n-Damage {Player.damage[0]}-{Player.damage[1]}\n-Aiming {Player.aim}\n-Anus tightness {Player.anus_tightness}')
 
 
 def home_choice():
-    h_choise = int(input('1:Stay at home 2:Show player stats 3:Go to gym'))
-    if h_choice() == 1:
+    global days_at_home
+    h_choice = int(input('1:Stay at home 2:Show player stats 3:Go to gym'))
+    if h_choice == 1:
+        days_at_home+=1
+        if player_has_apartment is True:
+            Player.cum += Player.max_cum/days_at_home
+        print('your cum ', Player.cum)
         cumming()
-    elif h_choice() == 2:
+    elif h_choice == 2:
         player_stats()
+        home_choice()
     else:
         gym_choice()
 
 def cumming():
-    global day
-    global day_in_apartment
-    global player_has_apartment
-    global months_in_apartment
+    global day, day_in_apartment, player_has_apartment, months_in_apartment
     day += 1
     print('-day ', day, '\n-day_in_apartment', day_in_apartment, '\n-months_in_apartment', months_in_apartment)
     while player_has_apartment is True:
         print('\nyou are going home')
-        Player.cum = Player.max_cum
         day_in_apartment += 1
+        print('your cum ', Player.cum)
         if day_in_apartment == 30:
             day_in_apartment = 0
             months_in_apartment += 1
             Player.bucks -=2000
-        home_choice()
         if day_in_apartment/30+months_in_apartment == months_in_apartment+1 and Player.bucks < 2000 and day > 1:
                 print('you are too broke for an apartment')
                 day_in_apartment = 0
                 months_in_apartment = 0
                 player_has_apartment = False
+        home_choice()
     if Player.bucks <= 0:
         print('you are dead')
         exit()
     print('\nyou are going to your dormitory')
     Player.cum = 1
+    print('your cum ', Player.cum)
     if Player.bucks > 4000:
         player_has_apartment = Ture
         Player.bucks -= 2000
     home_choice()
 
+def suction():
+    global b
+    enemy_choose = int(input("\nChoose ur enemy\n1. Dungeon Master\n2. Fucking slave\n3. Billy\n4. Leatherman\n5. Bogdan\n"))
+    enemy = functions.aboba[enemy_choose]
+    print("\n", enemy.name)
+    suction_number = rnd(1, enemy.lvl*20)
+    print("\n-your enemy is ", enemy.name)
+    print("\nYou have", {100/enemy.lvl+Player.lungs/enemy.lvl}, "seconds to suck!")
+    
 # fisting = attack / cumming = go home / Suction = gather money / gym = gain strength
 def gym_choice():
     while Player.cum > 0:
@@ -187,12 +204,13 @@ def gym_choice():
         elif a == "2":
             cumming()
         elif a == "3":
-            pass
+            suction()
         elif a == "4":
             pass
     print(Style.BRIGHT, Back.RED, "\n\nU got ur ass kicked out of the fucking gym\n\n", Style.RESET_ALL)
     cumming()
 
+# start of the game
 print('You are living in apartment for with you must pay 2000 bucks per month.\nIn gym you can do: fisting = attack someone / rank = see enemy stats / cumming = go home / suction = gather money / gym = gain strength')
 if __name__ == "__main__":
     cumming()
