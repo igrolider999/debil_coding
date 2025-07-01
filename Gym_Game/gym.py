@@ -5,6 +5,7 @@ from sympy import limit
 from threading import Timer
 import sqlite3
 
+#DOLBOEB
 day = 0
 day_in_apartment = 0
 months_in_apartment = 1
