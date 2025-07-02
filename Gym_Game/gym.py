@@ -1,6 +1,7 @@
 from time import sleep
 from colorama import Fore, Back, Style
 from random import *
+from random import randint as rnd
 from string import *
 from sympy import limit
 from threading import Timer
@@ -258,11 +259,18 @@ def gym():
     else:
         gym_choice()
 #gym / Banana suction
-def generate_word(length):
-    global real_word, choosen_word
+def generate_word():
+    global real_word, choosen_word, num
     word = choice(words)
     choosen_word = word
-    while len(word) < length:
+    difficulty = int(input("Choose difficulty:\n1:easy\n2:medium\n3:hard\n"))
+    if difficulty == 1:
+        real_word = word
+    elif difficulty == 2:
+        num = 10
+    elif difficulty == 3:
+        num = 20
+    while len(word) < num:
         word += choice(ascii_lowercase)
     letter_list = list(word)
     shuffle(letter_list)
@@ -270,15 +278,13 @@ def generate_word(length):
 
 def try_word():
     win = 0
-    generate_word(10)
+    generate_word()
     while win != 1:
         print('\nYou must do an gachi word from these letters:', '\n', real_word)
+        print(choosen_word)
         trying = input()
         if trying == choosen_word:
-            if trying in words:
-                win = 1
-            else:
-                print("that's not an gachi word")
+            win = 1
         else:
             print('you must do an gachi word from  ony from these letters:', '\n', real_word)
     print('you won!')
