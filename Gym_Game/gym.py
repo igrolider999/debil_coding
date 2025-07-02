@@ -1,6 +1,7 @@
 from time import sleep
 from colorama import Fore, Back, Style
-from random import randint as rnd
+from random import *
+from string import *
 from sympy import limit
 from threading import Timer
 import sqlite3
@@ -13,6 +14,8 @@ days_at_home = 0
 home_choice = 0
 sucked = 0
 next_enemy = 1
+words = ["gaysex", "semen", "fisting", "suction", "master", 'billy', 'fantasies', 'slave', 'lube', 'cum', 'anus', 'finger', 'dungeon', 'nextdoor', 'latexglove', 'van', 'weewee', 'darkholme', 'gaywebsite', 'gayporn', 'fatcock', 'dick', 'inmyass', 'bucks', 'hotloads', 'fistingass', 'balls', 'bondage']
+real_word = ''
 
 class Player:
     cum = int(100)  # hp
