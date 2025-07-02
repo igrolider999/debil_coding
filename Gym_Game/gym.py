@@ -205,14 +205,14 @@ def cumming():
             Player.bucks -=2000
         if Player.day_in_apartment/30+Player.months_in_apartment == Player.months_in_apartment+1 and Player.bucks < 2000 and day > 1:
                 print('you are too broke for an apartment')
-                day_in_apartment = 0
-                months_in_apartment = 0
-                player_has_apartment = False
+                Player.day_in_apartment = 0
+                Player.months_in_apartment = 0
+                Player.player_has_apartment = False
         home_choice()
     if Player.bucks <= 0:
         print('you are dead')
         exit()
-    print('\nyou are going to your dormitory')
+    print(Fore.BLACK, Back.WHITE, '\nyou are going to your dormitory', Style.RESET_ALL)
     Player.cum = 1
     print('your cum ', Player.cum)
     if Player.bucks > 4000:
@@ -225,7 +225,7 @@ def cumming():
 def suction():
     global gym
     suck_attempt = 0
-    enemy_choose = int(input("\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
+    enemy_choose = int(input(Fore.CYAN, "\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy", Style.RESET_ALL))
     enemy = functions.aboba[enemy_choose]
     print("\n", enemy.name)
     suction_number = rnd(1, enemy.lvl*20)
