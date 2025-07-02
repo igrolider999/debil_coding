@@ -7,14 +7,17 @@ from sympy import limit
 from threading import Timer
 import sqlite3
 
-day = 0
-day_in_apartment = 0
-months_in_apartment = 1
-player_has_apartment = True
-days_at_home = 0
+##############
+connection = sqlite3.connect("Gym_Game/game_stats.db")
+cursor = connection.cursor()
+
+##############
+
 home_choice = 0
 sucked = 0
 next_enemy = 1
+words = ["gaysex", "semen", "fisting", "suction", "master", 'billy', 'fantasies', 'slave', 'lube', 'cum', 'anus', 'finger', 'dungeon', 'nextdoor', 'latexglove', 'van', 'weewee', 'darkholme', 'gaywebsite', 'gayporn', 'fatcock', 'dick', 'inmyass', 'bucks', 'hotloads', 'fistingass', 'balls', 'bondage']
+real_word = ''
 
 class Player:
     cum = int(100)  # hp
@@ -24,6 +27,13 @@ class Player:
     aim = 1
     anus_tightness = 1
     lungs = 1
+    sucked = 0
+    next_enemy = 1
+    day = 0
+    day_in_apartment = 0
+    months_in_apartment = 1
+    player_has_apartment = True
+    days_at_home = 0
 
 class Enemies:
     class fucking_slave:
@@ -79,17 +89,17 @@ class Enemies:
 class functions:
     aboba = {1: Enemies.fucking_slave, 2: Enemies.dungeon_master , 3: Enemies.Leatherman, 4: Enemies.Uncle_Bogdan,5: Enemies.Billy}
 
+next_enemy_stats = functions.aboba[Player.next_enemy]
 # left_enemies = list(dungeon_master, fucking_slave, Billy, Van, Uncle_bogdan)
 
 def fisting():
-    global next_enemy
+    global next_enemy, next_enemy_stats
     if Player.bucks >= 300:
         enemy_choose = int(input("\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
         if enemy_choose > next_enemy:
-            print('\nYou are too weak for him. Try someone else')
+            print(Fore.MAGENTA, '\nYou are too weak for him. Try someone else', Style.RESET_ALL)
             fisting()
         enemy = functions.aboba[enemy_choose]
-        next_enemy_stats = functions.aboba[next_enemy]
         print("\n", enemy.name)
 
         # fisting / attack functions
@@ -98,10 +108,10 @@ def fisting():
             dice_roll = rnd(1, 100)
             player_aim = dice_roll + Player.aim
             if dice_roll == 1:
-                print(Back.LIGHTRED_EX, Style.BRIGHT, "Critical miss! - enemy healed {player_damage}", Style.RESET_ALL)
+                print(Back.LIGHTRED_EX, Style.BRIGHT, f"Critical miss! - enemy healed {player_damage}", Style.RESET_ALL)
                 enemy.cum += player_damage
             elif dice_roll == 100:
-                print(Back.LIGHTGREEN_EX, Style.BRIGHT, "Critical hit! - {player_damage*2}", Style.RESET_ALL)
+                print(Back.LIGHTGREEN_EX, Style.BRIGHT, f"Critical hit! - {player_damage*2}", Style.RESET_ALL)
                 player_damage *= 2
             elif player_damage == 0 or player_aim < enemy.anus_tightness:
                 print(Back.LIGHTRED_EX, "Missed!", Style.RESET_ALL)
@@ -114,10 +124,10 @@ def fisting():
             dice_roll = rnd(1, 100)
             enemy_aim = dice_roll + enemy.aim
             if dice_roll == 1:
-                print(Back.LIGHTRED_EX, Style.BRIGHT, "Critical miss! - you healed {enemy_damage}", Style.RESET_ALL)
+                print(Back.LIGHTRED_EX, Style.BRIGHT, f"Critical miss! - you healed {enemy_damage}", Style.RESET_ALL)
                 Player.cum += enemy_damage
             elif dice_roll == 100:
-                print(Back.LIGHTGREEN_EX, Style.BRIGHT, "Critical hit! - {enemy_damage*2}", Style.RESET_ALL)
+                print(Back.LIGHTGREEN_EX, Style.BRIGHT, f"Critical hit! - {enemy_damage*2}", Style.RESET_ALL)
                 enemy_damage *= 2
             elif enemy_damage == 0 or enemy_aim < Player.anus_tightness:
                 print(Back.LIGHTRED_EX, "Missed!", Style.RESET_ALL)
@@ -142,7 +152,7 @@ def fisting():
             Player.anus_tightness += anus_tightness_addition
             quit()
         elif enemy.cum <= 0:
-            print("\nYou won!")
+            print(Fore.YELLOW, "\nYou won!", Style.RESET_ALL)
             if enemy.is_defeated == False:
                 enemy.is_defeated = True
                 next_enemy += 1
@@ -155,7 +165,7 @@ def fisting():
 
     # fisting / not enough bucks
     else:
-        print("\n-Fuck you")
+        print(Fore.RED, "\n-Fuck you", Style.RESET_ALL)
         gym_choice()
 
 def player_stats():
@@ -164,12 +174,12 @@ def player_stats():
 # choise that you make at home
 
 def home_choice():
-    global days_at_home
+    global Player
     h_choice = int(input('1:Stay at home 2:Show player stats 3:Go to gym'))
     if h_choice == 1:
-        days_at_home+=1
+        Player.days_at_home += 1
         if player_has_apartment is True:
-            Player.cum += Player.max_cum/days_at_home
+            Player.cum += Player.max_cum/Player.days_at_home
         print('your cum ', Player.cum)
         cumming()
     elif h_choice == 2:
@@ -181,53 +191,47 @@ def home_choice():
 # going home
 
 def cumming():
-    global day, day_in_apartment, player_has_apartment, months_in_apartment
-    day += 1
-    if sucked == 1:
+    global Player
+    Player.day += 1
+    if Player.sucked == 1:
         print('you sucked too long and got kicked out of this gym')
-        sucked = 0
     print('-day ', day, '\n-day_in_apartment', day_in_apartment, '\n-months_in_apartment', months_in_apartment)
     while player_has_apartment is True:
         print('\nyou are going home')
-        day_in_apartment += 1
+        Player.day_in_apartment += 1
         print('your cum ', Player.cum)
-        if day_in_apartment == 30:
-            day_in_apartment = 0
-            months_in_apartment += 1
+        if Player.day_in_apartment == 30:
+            Player.day_in_apartment = 0
+            Player.months_in_apartment += 1
             Player.bucks -=2000
-        if day_in_apartment/30+months_in_apartment == months_in_apartment+1 and Player.bucks < 2000 and day > 1:
+        if Player.day_in_apartment/30+Player.months_in_apartment == Player.months_in_apartment+1 and Player.bucks < 2000 and day > 1:
                 print('you are too broke for an apartment')
-                day_in_apartment = 0
-                months_in_apartment = 0
-                player_has_apartment = False
+                Player.day_in_apartment = 0
+                Player.months_in_apartment = 0
+                Player.player_has_apartment = False
         home_choice()
     if Player.bucks <= 0:
         print('you are dead')
         exit()
-    print('\nyou are going to your dormitory')
+    print(Fore.BLACK, Back.WHITE, '\nyou are going to your dormitory', Style.RESET_ALL)
     Player.cum = 1
     print('your cum ', Player.cum)
     if Player.bucks > 4000:
-        player_has_apartment = True
+        Player.player_has_apartment = True
         Player.bucks -= 2000
     home_choice()
 
 # suction
 
-def breathe_end():
-    global sucked
-    print("You can't breathe\n-Get out")
-    sucked = 1
-
 def suction():
     global gym
     suck_attempt = 0
-    enemy_choose = int(input("\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
+    enemy_choose = int(input(Fore.CYAN, "\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy", Style.RESET_ALL))
     enemy = functions.aboba[enemy_choose]
     print("\n", enemy.name)
     suction_number = rnd(1, enemy.lvl*20)
     print("\n-your enemy is ", enemy.name)
-    breathe = Timer(100/enemy.lvl+Player.lungs, lambda:breathe_end())
+    breathe = Timer(100/enemy.lvl+Player.lungs, lambda:print('you sucked too long'))
     breathe.start()
     print("\nYou have", 100/enemy.lvl+Player.lungs, "seconds to suck!")
     print('you must find tempo from ', 1, 'to', enemy.lvl*20)
@@ -239,7 +243,7 @@ def suction():
             print('slower\n')
     breathe.cancel()
     Player.bucks += enemy.lvl*10
-    print('you got', enemy.lvl*10, 'bucks\nYour balance is', Player.bucks)
+    print(Fore.YELLOW, 'you got', enemy.lvl*10, 'bucks\nYour balance is', Player.bucks, Style.RESET_ALL)
     gym_choice()
 
 # gym / stat progression / Self fisting = max gamage / Masturbating = min gamage / Banana suction = lungs / anal bot = aim
@@ -277,18 +281,18 @@ def try_word():
     win = 0
     generate_word()
     while win != 1:
-        print('\nYou must do an gachi word from these letters:', '\n', real_word)
+        print(Fore.CYAN, '\nYou must do an gachi word from these letters:', '\n', real_word, Style.RESET_ALL)
         print(choosen_word)
         trying = input()
         if trying == choosen_word:
             win = 1
         else:
             print('you must do an gachi word from  ony from these letters:', '\n', real_word)
-    print('you won!')
+    print(Fore.YELLOW, 'you won!', Style.RESET_ALL)
     lungs_addition = next_enemy_stats.lvl / Player.lungs
-    limit(lungs_addition, Player.lungs, next_enemy_stats.lvl)
-    Player.lungs += lungs_addition
-    print(lungs_addition)
+    limit(lungs_addition, Player.lungs, next_enemy_stats.lvl / 10)
+    Player.max_cum += lungs_addition
+    print(Fore.YELLOW, 'your lungs have increased to ', Player.lungs, Style.RESET_ALL)
     gym_choice()
 
 # fisting = attack / cumming = go home / Suction = gather money / gym = gain strength
@@ -309,6 +313,7 @@ def gym_choice():
     cumming()
 
 # start of the game
-print('You are living in apartment for with you must pay 2000 bucks per month.\nIn gym you can do: fisting = attack someone / rank = see enemy stats / cumming = go home / suction = gather money / gym = gain strength')
+print(f'{Fore.GREEN}{Style.BRIGHT}\nYou are living in apartment for with you must pay 2000 bucks per month.{Style.RESET_ALL}\nIn gym you can do: fisting = attack someone / rank = see enemy stats / cumming = go home / suction = gather money / gym = gain strength')
 if __name__ == "__main__":
-    cumming() 
+    cumming()
+    cursor.execute(f"""CREATE TABLE IF NOT EXISTS statistics({Player.cum} INTEGER, {Player.bucks} INTEGER, {Player.damage} INTEGER)""")
