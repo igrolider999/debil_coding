@@ -1,6 +1,8 @@
 from time import sleep
 from colorama import Fore, Back, Style
+from random import *
 from random import randint as rnd
+from string import *
 from sympy import limit
 from threading import Timer
 import sqlite3
@@ -13,7 +15,7 @@ days_at_home = 0
 home_choice = 0
 sucked = 0
 next_enemy = 1
-# mme
+
 class Player:
     cum = int(100)  # hp
     max_cum = 100  # max hp
@@ -87,6 +89,7 @@ def fisting():
             print('\nYou are too weak for him. Try someone else')
             fisting()
         enemy = functions.aboba[enemy_choose]
+        next_enemy_stats = functions.aboba[next_enemy]
         print("\n", enemy.name)
 
         # fisting / attack functions
@@ -134,8 +137,8 @@ def fisting():
         # fisting / end of battle
         if Player.cum <= 0:
             print(Style.BRIGHT, Back.RED, "\n\nU got ur ass kicked out of the fucking gym\n\n", Style.RESET_ALL)
-            anus_tightness_addition = Player.anus_tightness / enemy.anus_tightness
-            limit(anus_tightness_addition, Player.anus_tightness, enemy.anus_tightness / 10)
+            anus_tightness_addition = next_enemy_stats.anus_tightness / Player.anus_tightness
+            limit(anus_tightness_addition, Player.anus_tightness, next_enemy_stats.anus_tightness / 10)
             Player.anus_tightness += anus_tightness_addition
             quit()
         elif enemy.cum <= 0:
@@ -144,9 +147,9 @@ def fisting():
                 enemy.is_defeated = True
                 next_enemy += 1
             Player.bucks += enemy.lvl * 100
-            max_cum_addition = Player.max_cum / enemy.cum
-            limit(anus_tightness_addition, Player.anus_tightness, enemy.anus_tightness / 10)
-            Player.anus_tightness += anus_tightness_addition
+            max_cum_addition = next_enemy_stats.max_cum / Player.max_cum
+            limit(max_cum_addition, Player.max_cum, next_enemy_stats.max_cum / 10)
+            Player.max_cum += max_cum_addition
             print(Fore.YELLOW, "You got ", enemy.lvl * 100, " bucks", Style.RESET_ALL)
             print(Fore.YELLOW, "Your money:", Player.bucks, Style.RESET_ALL)
 
@@ -157,8 +160,6 @@ def fisting():
 
 def player_stats():
     print(f'-current cum {Player.cum}\n-max cum {Player.max_cum}\n-bucks {Player.bucks}\n-Damage {Player.damage[0]}-{Player.damage[1]}\n-Aiming {Player.aim}\n-Anus tightness {Player.anus_tightness}')
-
-
 
 # choise that you make at home
 
@@ -226,9 +227,9 @@ def suction():
     print("\n", enemy.name)
     suction_number = rnd(1, enemy.lvl*20)
     print("\n-your enemy is ", enemy.name)
-    breathe = Timer(100/enemy.lvl+Player.lungs/enemy.lvl, lambda:breathe_end())
+    breathe = Timer(100/enemy.lvl+Player.lungs, lambda:breathe_end())
     breathe.start()
-    print("\nYou have", 100/enemy.lvl+Player.lungs/enemy.lvl, "seconds to suck!")
+    print("\nYou have", 100/enemy.lvl+Player.lungs, "seconds to suck!")
     print('you must find tempo from ', 1, 'to', enemy.lvl*20)
     while suck_attempt != suction_number:
         suck_attempt = int(input())
@@ -241,10 +242,54 @@ def suction():
     print('you got', enemy.lvl*10, 'bucks\nYour balance is', Player.bucks)
     gym_choice()
 
-# gym / stat progression
+# gym / stat progression / Self fisting = max gamage / Masturbating = min gamage / Banana suction = lungs / anal bot = aim
 def gym():
-    train_shoice = int(input('\nChoose your action:\n1. Fisting\n2. Cumming\n3. Suction\n4. Gym'))
-    
+    train_choice = int(input('\nChoose your training:\n1. Self fisting\n2. Masturbating\n3. Banana suction\n4. Anal bot'))
+    if train_choice == 1:
+        gym()
+    elif train_choice == 2:
+        gym()
+    elif train_choice == 3:
+        try_word()
+    elif train_choice == 4:
+        gym()
+    else:
+        gym_choice()
+#gym / Banana suction
+def generate_word():
+    global real_word, choosen_word, num
+    word = choice(words)
+    choosen_word = word
+    difficulty = int(input("Choose difficulty:\n1:easy\n2:medium\n3:hard\n"))
+    if difficulty == 1:
+        real_word = word
+    elif difficulty == 2:
+        num = 10
+    elif difficulty == 3:
+        num = 20
+    while len(word) < num:
+        word += choice(ascii_lowercase)
+    letter_list = list(word)
+    shuffle(letter_list)
+    real_word = str("".join(letter_list))
+
+def try_word():
+    win = 0
+    generate_word()
+    while win != 1:
+        print('\nYou must do an gachi word from these letters:', '\n', real_word)
+        print(choosen_word)
+        trying = input()
+        if trying == choosen_word:
+            win = 1
+        else:
+            print('you must do an gachi word from  ony from these letters:', '\n', real_word)
+    print('you won!')
+    lungs_addition = next_enemy_stats.lvl / Player.lungs
+    limit(lungs_addition, Player.lungs, next_enemy_stats.lvl)
+    Player.lungs += lungs_addition
+    print(lungs_addition)
+    gym_choice()
 
 # fisting = attack / cumming = go home / Suction = gather money / gym = gain strength
 def gym_choice():
@@ -257,7 +302,7 @@ def gym_choice():
         elif a == "3":
             suction()
         elif a == "4":
-            pass
+            gym()
         else:
             exit()
     print(Style.BRIGHT, Back.RED, "\n\nU got ur ass kicked out of the fucking gym\n\n", Style.RESET_ALL)
