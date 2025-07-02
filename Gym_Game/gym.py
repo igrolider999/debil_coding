@@ -163,8 +163,6 @@ def fisting():
 def player_stats():
     print(f'-current cum {Player.cum}\n-max cum {Player.max_cum}\n-bucks {Player.bucks}\n-Damage {Player.damage[0]}-{Player.damage[1]}\n-Aiming {Player.aim}\n-Anus tightness {Player.anus_tightness}')
 
-
-
 # choise that you make at home
 
 def home_choice():
@@ -305,7 +303,7 @@ def gym_choice():
         elif a == "3":
             suction()
         elif a == "4":
-            pass
+            gym()
         else:
             exit()
     print(Style.BRIGHT, Back.RED, "\n\nU got ur ass kicked out of the fucking gym\n\n", Style.RESET_ALL)
