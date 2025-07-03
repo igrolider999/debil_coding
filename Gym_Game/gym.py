@@ -210,7 +210,7 @@ def cumming():
                 Player.player_has_apartment = False
         home_choice()
     if Player.bucks <= 0:
-        print('you are dead')
+        print(Fore.BLACK, Back.RED, 'you are dead', Style.RESET_ALL)
         exit()
     print(Fore.BLACK, Back.WHITE, '\nyou are going to your dormitory', Style.RESET_ALL)
     Player.cum = 1
