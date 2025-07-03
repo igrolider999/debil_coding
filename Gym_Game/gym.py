@@ -8,7 +8,7 @@ from threading import Timer
 import sqlite3
 
 ##############
-connection = sqlite3.connect("Gym_Game/game_stats.db")
+connection = sqlite3.connect("game_stats.db")
 cursor = connection.cursor()
 
 ##############
@@ -18,7 +18,7 @@ sucked = 0
 next_enemy = 1
 words = ["gaysex", "semen", "fisting", "suction", "master", 'billy', 'fantasies', 'slave', 'lube', 'cum', 'anus', 'finger', 'dungeon', 'nextdoor', 'latexglove', 'van', 'weewee', 'darkholme', 'gaywebsite', 'gayporn', 'fatcock', 'dick', 'inmyass', 'bucks', 'hotloads', 'fistingass', 'balls', 'bondage']
 real_word = ''
-
+num = 0
 class Player:
     cum = int(100)  # hp
     max_cum = 100  # max hp
@@ -178,7 +178,7 @@ def home_choice():
     h_choice = int(input('1:Stay at home 2:Show player stats 3:Go to gym'))
     if h_choice == 1:
         Player.days_at_home += 1
-        if player_has_apartment is True:
+        if Player.player_has_apartment is True:
             Player.cum += Player.max_cum/Player.days_at_home
         print('your cum ', Player.cum)
         cumming()
@@ -195,8 +195,8 @@ def cumming():
     Player.day += 1
     if Player.sucked == 1:
         print('you sucked too long and got kicked out of this gym')
-    print('-day ', day, '\n-day_in_apartment', day_in_apartment, '\n-months_in_apartment', months_in_apartment)
-    while player_has_apartment is True:
+    print('-day ', Player.day, '\n-day_in_apartment', Player.day_in_apartment, '\n-months_in_apartment', Player.months_in_apartment)
+    while Player.player_has_apartment is True:
         print('\nyou are going home')
         Player.day_in_apartment += 1
         print('your cum ', Player.cum)
@@ -211,7 +211,7 @@ def cumming():
                 Player.player_has_apartment = False
         home_choice()
     if Player.bucks <= 0:
-        print('you are dead')
+        print(Fore.BLACK, Back.RED, 'you are dead', Style.RESET_ALL)
         exit()
     print(Fore.BLACK, Back.WHITE, '\nyou are going to your dormitory', Style.RESET_ALL)
     Player.cum = 1
