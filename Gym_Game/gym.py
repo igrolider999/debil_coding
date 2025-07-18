@@ -239,7 +239,7 @@ def cumming():
             Player.day_in_apartment = 0
             Player.months_in_apartment += 1
             Player.bucks -=2000
-        if Player.day_in_apartment/30+Player.months_in_apartment == Player.months_in_apartment+1 and Player.bucks < 2000 and day > 1:
+        if Player.day_in_apartment/30+Player.months_in_apartment == Player.months_in_apartment+1 and Player.bucks < 2000 and Player.day > 1:
                 print('you are too broke for an apartment')
                 Player.day_in_apartment = 0
                 Player.months_in_apartment = 0
