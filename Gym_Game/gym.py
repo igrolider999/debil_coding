@@ -6,11 +6,11 @@ from string import *
 from sympy import limit
 from threading import Timer
 import sqlite3
+import sys
 
 ##############
-connection = sqlite3.connect("game_stats.db")
+connection = sqlite3.connect("Gym_Game/game_stats.db")
 cursor = connection.cursor()
-
 ##############
 
 home_choice = 0
@@ -19,11 +19,13 @@ next_enemy = 1
 words = ["gaysex", "semen", "fisting", "suction", "master", 'billy', 'fantasies', 'slave', 'lube', 'cum', 'anus', 'finger', 'dungeon', 'nextdoor', 'latexglove', 'van', 'weewee', 'darkholme', 'gaywebsite', 'gayporn', 'fatcock', 'dick', 'inmyass', 'bucks', 'hotloads', 'fistingass', 'balls', 'bondage']
 real_word = ''
 num = 0
+difficulty = 0
+
 class Player:
     cum = int(100)  # hp
     max_cum = 100  # max hp
     bucks = 1000  # money
-    damage = [0, 1]  # strength
+    damage = [0, 2]  # strength
     aim = 1
     anus_tightness = 1
     lungs = 1
@@ -88,15 +90,46 @@ class Enemies:
 
 class functions:
     aboba = {1: Enemies.fucking_slave, 2: Enemies.dungeon_master , 3: Enemies.Leatherman, 4: Enemies.Uncle_Bogdan,5: Enemies.Billy}
+    def saves():
+        cursor.execute("SELECT * FROM statistics")
+        result = cursor.fetchall()
+        print('\n', result)
+    def savegame():
+        print(f"{Back.YELLOW}Saving ur fucking game...{Style.RESET_ALL}")
+        sleep(1.5)
+        cursor.execute(f"""INSERT INTO statistics ('cum', 'bucks', 'damage_min', 'damage_max') VALUES ({Player.cum}, {Player.bucks}, {Player.damage[0]}, {Player.damage[1]})""")
+        connection.commit()
+        print(f"\n{Back.GREEN}Ur fucking game is fucking saved now get the fuck out{Style.RESET_ALL}")
+    def savedelete():
+        text = "SAVES ARE DELETED"
+        for letter in text:
+            print(Back.RED, letter, Style.RESET_ALL,end='', flush=True)
+            sleep(0.3)
+        cursor.execute('DELETE FROM statistics')
+        connection.commit()
 
 next_enemy_stats = functions.aboba[Player.next_enemy]
 # left_enemies = list(dungeon_master, fucking_slave, Billy, Van, Uncle_bogdan)
 
+def settings():
+    a = input(f"\n{Fore.YELLOW}Settings{Style.RESET_ALL}\n\n1. Save game\n2. Check saves\n3. Delete saves")
+    if a == '1':
+        functions.savegame()
+        settings()
+    elif a == '2':
+        functions.saves()
+        settings()
+    elif a == '3':
+        functions.savedelete()
+        settings()
+    else:
+        cumming()
+
 def fisting():
     global next_enemy, next_enemy_stats
     if Player.bucks >= 300:
-        enemy_choose = int(input("\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
-        if enemy_choose > next_enemy:
+        enemy_choose = int(input(f"\n{Fore.CYAN}Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy"))
+        if enemy_choose > Player.next_enemy:
             print(Fore.MAGENTA, '\nYou are too weak for him. Try someone else', Style.RESET_ALL)
             fisting()
         enemy = functions.aboba[enemy_choose]
@@ -150,6 +183,7 @@ def fisting():
             anus_tightness_addition = next_enemy_stats.anus_tightness / Player.anus_tightness
             limit(anus_tightness_addition, Player.anus_tightness, next_enemy_stats.anus_tightness / 10)
             Player.anus_tightness += anus_tightness_addition
+            connection.close() #предохранитель
             quit()
         elif enemy.cum <= 0:
             print(Fore.YELLOW, "\nYou won!", Style.RESET_ALL)
@@ -169,25 +203,26 @@ def fisting():
         gym_choice()
 
 def player_stats():
-    print(f'-current cum {Player.cum}\n-max cum {Player.max_cum}\n-bucks {Player.bucks}\n-Damage {Player.damage[0]}-{Player.damage[1]}\n-Aiming {Player.aim}\n-Anus tightness {Player.anus_tightness}')
+    print(f'\n-Current cum {Player.cum}\n-Max cum {Player.max_cum}\n-Bucks {Player.bucks}\n-Damage {Player.damage[0]}-{Player.damage[1]}\n-Aiming {Player.aim}\n-Anus tightness {Player.anus_tightness}')
 
 # choise that you make at home
 
 def home_choice():
     global Player
-    h_choice = int(input('1:Stay at home 2:Show player stats 3:Go to gym'))
-    if h_choice == 1:
+    h_choice = input(f'\n{Fore.YELLOW}Make a choice{Style.RESET_ALL}\n\n1: Stay at home\n2: Show player stats\n3: Go to gym\n4: Open settings')
+    if h_choice == "1":
         Player.days_at_home += 1
         if Player.player_has_apartment is True:
-            Player.cum += Player.max_cum/Player.days_at_home
+            Player.cum += int(Player.max_cum/Player.days_at_home)
         print('your cum ', Player.cum)
         cumming()
-    elif h_choice == 2:
+    elif h_choice == "2":
         player_stats()
         home_choice()
-    else:
+    elif h_choice == "3":
         gym_choice()
-
+    elif h_choice == "4":
+        settings()
 # going home
 
 def cumming():
@@ -195,7 +230,7 @@ def cumming():
     Player.day += 1
     if Player.sucked == 1:
         print('you sucked too long and got kicked out of this gym')
-    print('-day ', Player.day, '\n-day_in_apartment', Player.day_in_apartment, '\n-months_in_apartment', Player.months_in_apartment)
+    print(f'{Fore.CYAN}Day: ', Player.day, '\nDays in apartment: ', Player.day_in_apartment, '\nMonths in apartment: ', Player.months_in_apartment, Style.RESET_ALL)
     while Player.player_has_apartment is True:
         print('\nyou are going home')
         Player.day_in_apartment += 1
@@ -212,6 +247,7 @@ def cumming():
         home_choice()
     if Player.bucks <= 0:
         print(Fore.BLACK, Back.RED, 'you are dead', Style.RESET_ALL)
+        connection.close() #предохранитель
         exit()
     print(Fore.BLACK, Back.WHITE, '\nyou are going to your dormitory', Style.RESET_ALL)
     Player.cum = 1
@@ -226,7 +262,7 @@ def cumming():
 def suction():
     global gym
     suck_attempt = 0
-    enemy_choose = int(input(Fore.CYAN, "\n Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy", Style.RESET_ALL))
+    enemy_choose = int(input(f"\n{Fore.CYAN} Choose your enemy\n1:fucking slave\n2:dungeon master\n3:Leatherman\n4:Uncle Bogdan\n5:Billy{Style.RESET_ALL}"))
     enemy = functions.aboba[enemy_choose]
     print("\n", enemy.name)
     suction_number = rnd(1, enemy.lvl*20)
@@ -261,7 +297,7 @@ def gym():
         gym_choice()
 #gym / Banana suction
 def generate_word():
-    global real_word, choosen_word, num
+    global real_word, choosen_word, num, difficulty
     word = choice(words)
     choosen_word = word
     difficulty = int(input("Choose difficulty:\n1:easy\n2:medium\n3:hard\n"))
@@ -289,7 +325,12 @@ def try_word():
         else:
             print('you must do an gachi word from  ony from these letters:', '\n', real_word)
     print(Fore.YELLOW, 'you won!', Style.RESET_ALL)
-    lungs_addition = next_enemy_stats.lvl / Player.lungs
+    if difficulty == 1:
+        lungs_addition = next_enemy_stats.lvl / Player.lungs / 3
+    elif difficulty == 2:
+        lungs_addition = next_enemy_stats.lvl / Player.lungs
+    elif difficulty == 3:
+        lungs_addition = next_enemy_stats.lvl / Player.lungs * 5
     limit(lungs_addition, Player.lungs, next_enemy_stats.lvl / 10)
     Player.max_cum += lungs_addition
     print(Fore.YELLOW, 'your lungs have increased to ', Player.lungs, Style.RESET_ALL)
@@ -308,12 +349,13 @@ def gym_choice():
         elif a == "4":
             gym()
         else:
+            connection.close() #предохранитель
             exit()
     print(Style.BRIGHT, Back.RED, "\n\nU got ur ass kicked out of the fucking gym\n\n", Style.RESET_ALL)
     cumming()
 
 # start of the game
-print(f'{Fore.GREEN}{Style.BRIGHT}\nYou are living in apartment for with you must pay 2000 bucks per month.{Style.RESET_ALL}\nIn gym you can do: fisting = attack someone / rank = see enemy stats / cumming = go home / suction = gather money / gym = gain strength')
+print(f'{Fore.GREEN}{Style.BRIGHT}\nYou are living in apartment for with you must pay 2000 bucks per month.{Style.RESET_ALL}\nIn gym you can do:{Fore.LIGHTYELLOW_EX} fisting = attack someone / rank = see enemy stats / cumming = go home / suction = gather money / gym = gain strenght{Style.RESET_ALL}')
 if __name__ == "__main__":
+    cursor.execute("""CREATE TABLE IF NOT EXISTS statistics(profile INTEGER PRIMARY KEY, cum INTEGER, bucks INTEGER, damage_min INTEGER, damage_max INTEGER)""")
     cumming()
-    cursor.execute(f"""CREATE TABLE IF NOT EXISTS statistics({Player.cum} INTEGER, {Player.bucks} INTEGER, {Player.damage} INTEGER)""")
