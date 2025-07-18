@@ -107,12 +107,21 @@ class functions:
             sleep(0.3)
         cursor.execute('DELETE FROM statistics')
         connection.commit()
-
+    def saveload():
+        print(f"{Back.GREEN}UR FUCKING GAME IS FUCKING LOADING FUCK OFF{Style.RESET_ALL}")
+        sleep(1)
+        cursor.execute("SELECT * FROM statistics WHERE profile = 1")
+        result = cursor.fetchone()
+        Player.cum = result[1]
+        Player.bucks = result[2]
+        Player.damage = [result[3], result[4]]
+        connection.commit()
+        settings()
 next_enemy_stats = functions.aboba[Player.next_enemy]
 # left_enemies = list(dungeon_master, fucking_slave, Billy, Van, Uncle_bogdan)
 
 def settings():
-    a = input(f"\n{Fore.YELLOW}Settings{Style.RESET_ALL}\n\n1. Save game\n2. Check saves\n3. Delete saves")
+    a = input(f"\n{Fore.YELLOW}Settings{Style.RESET_ALL}\n\n1. Save game\n2. Check saves\n3. Delete saves\n4. Load profile 1")
     if a == '1':
         functions.savegame()
         settings()
@@ -122,9 +131,11 @@ def settings():
     elif a == '3':
         functions.savedelete()
         settings()
+    elif a == '4':
+        functions.saveload()
+        settings()
     else:
         cumming()
-
 def fisting():
     global next_enemy, next_enemy_stats
     if Player.bucks >= 300:
